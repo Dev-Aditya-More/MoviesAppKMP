@@ -1,8 +1,12 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -23,8 +27,22 @@ kotlin {
     }
     
     sourceSets {
+        androidMain.dependencies {
+
+            implementation(libs.ktor.client.core)
+            implementation("io.ktor:ktor-client-android:2.3.7")
+        }
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            // Coroutines (StateFlow, CoroutineScope, Dispatchers)
+            implementation(libs.kotlinx.coroutines.core)
+
+            // Ktor core
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+
+            // JSON serialization
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
