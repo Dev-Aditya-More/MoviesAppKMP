@@ -1,17 +1,15 @@
 package org.example.movieapplibrary.ui.components
 
-import android.util.Log
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,11 +20,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import org.example.movieapplibrary.domain.model.Movie
+import org.example.movieapplibrary.domain.model.movielist.Movie
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieCard(
+fun SharedTransitionScope.MovieCard(
+    modifier: Modifier = Modifier,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     posterUrl: String? = null,
     rating: Double = 0.0,
     isFavourite: Boolean = false,
@@ -36,24 +36,29 @@ fun MovieCard(
         id = 0,
         title = "Movie Title",
         posterPath = null,
-        rating = 0.0
-    ),
-    modifier: Modifier = Modifier
+        rating = 0.0,
+        year = null
+    )
 ) {
     Box(
         modifier = modifier
             .aspectRatio(2f / 3f)
             .clip(RoundedCornerShape(20.dp))
-            .clickable {
-                Log.d("CLICK", "Movie ${movie.id}")
-                onClick()
-            }
+            .clickable { onClick() }
     ) {
+
         AsyncImage(
             model = posterUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .sharedElement(
+                    sharedContentState = rememberSharedContentState(
+                        key = "poster-${movie.id}"
+                    ),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
         )
 
         Box(

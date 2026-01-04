@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.example.movieapplibrary.domain.model.MovieDetail
+import org.example.movieapplibrary.domain.model.moviedetails.MovieDetail
 
 @Composable
 fun InfoCard(movie: MovieDetail) {

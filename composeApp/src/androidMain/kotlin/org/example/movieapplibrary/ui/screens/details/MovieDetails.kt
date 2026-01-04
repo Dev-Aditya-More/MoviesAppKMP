@@ -1,29 +1,32 @@
 package org.example.movieapplibrary.ui.screens.details
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.example.movieapplibrary.domain.model.MovieDetail
+import org.example.movieapplibrary.domain.model.moviedetails.MovieDetail
 import org.example.movieapplibrary.ui.components.InfoBlock
 import org.example.movieapplibrary.ui.components.InfoCard
 import org.example.movieapplibrary.ui.components.PosterSection
 import org.example.movieapplibrary.ui.components.SynopsisCard
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieDetailScreen(
-    movie: MovieDetail,
+fun SharedTransitionScope.MovieDetailScreen(
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    movie: MovieDetail?,
     isFavourite: Boolean,
     onBack: () -> Unit,
     onToggleFavourite: () -> Unit
@@ -38,6 +41,12 @@ fun MovieDetailScreen(
                         Color(0xFF2E0B4F)
                     )
                 )
+            ).windowInsetsPadding(WindowInsets.statusBars)
+            .sharedElement(
+                sharedContentState = rememberSharedContentState(
+                    key = "poster-${movie?.id}"
+                ),
+                animatedVisibilityScope = animatedVisibilityScope
             )
     ) {
         LazyColumn(
@@ -46,29 +55,33 @@ fun MovieDetailScreen(
 
             item {
                 PosterSection(
-                    posterUrl = movie.backdropUrl.toString(),
-                    rating = movie.rating,
+                    posterUrl = movie?.backdropUrl.toString(),
+                    rating = movie?.rating ?: 0.0,
                     isFavourite = isFavourite,
                     onBack = onBack,
                     onFavouriteClick = onToggleFavourite
                 )
             }
 
-            item { InfoCard(movie) }
+            item {
+                if (movie != null) {
+                    InfoCard(movie)
+                }
+            }
 
-            item { SynopsisCard(movie.overview) }
+            item { SynopsisCard(movie?.overview ?: "") }
 
             item {
                 InfoBlock(
                     title = "Genres",
-                    content = movie.genres.joinToString(", ")
+                    content = movie?.genres?.joinToString(", ") ?: ""
                 )
             }
 
             item {
                 InfoBlock(
                     title = "Runtime",
-                    content = "${movie.duration} min"
+                    content = movie?.duration ?: ""
                 )
             }
         }
