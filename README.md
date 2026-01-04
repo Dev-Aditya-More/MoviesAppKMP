@@ -56,18 +56,13 @@ Remote Data Source (Ktor)
 
 ## Networking
 
-API Used: The Movie Database (TMDB)
+- API Used: The Movie Database (TMDB)
 
-Client: Ktor Client (Multiplatform)
+- Client: Ktor Client (Multiplatform)
 
-Serialization: kotlinx.serialization
+- Serialization: kotlinx.serialization
 
-Authentication: Bearer Token
-
-### API key is not committed.
-Add the following to gradle.properties:
-
-TMDB_Token=your_tmdb_bearer_token_here
+- Authentication: Bearer Token
 
 ## State Management
 
@@ -82,16 +77,6 @@ TMDB_Token=your_tmdb_bearer_token_here
 ### UI & Animations
 
 - Jetpack Compose + Material 3
-
-### Dependency Injection
-
-Koin is used across:
-
-KMP shared module
-
-Android app
-
-ViewModels are injected using koinViewModel()
 
 ### Libraries Used
 
