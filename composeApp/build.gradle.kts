@@ -1,4 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.gradle.kotlin.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -37,35 +37,21 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(compose.materialIconsExtended)
-            implementation("io.coil-kt:coil-compose:2.5.0")
+            implementation(libs.coil.kt.coil.compose)
 
 
             implementation(libs.androidx.navigation.compose)
+
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.core)
+
+            implementation(libs.accompanist.navigation.animation)
+
+            implementation(libs.androidx.ui.graphics)
+            implementation(libs.androidx.ui.tooling.preview)
+            implementation(libs.androidx.material3)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(projects.shared)
-
-            // Coroutines
-            implementation(libs.kotlinx.coroutines.core)
-
-            // Ktor core
-            implementation(libs.ktor.client.core)
-
-            // Content negotiation
-            implementation(libs.ktor.client.content.negotiation)
-
-            // JSON serialization
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.kotlinx.serialization.json)
-            implementation("io.coil-kt:coil-compose:2.5.0")
 
         }
         commonTest.dependencies {
@@ -90,8 +76,8 @@ android {
 
         buildConfigField(
             "String",
-            "TMDB_API_KEY",
-            "\"${rootProject.findProperty("TMDB_API_KEY") ?: ""}\""
+            "TMDB_Token",
+            "\"${rootProject.findProperty("TMDB_Token") ?: ""}\""
         )
     }
     packaging {
