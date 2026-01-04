@@ -1,9 +1,11 @@
 package org.example.movieapplibrary.data.mapper
 
-import org.example.movieapplibrary.data.dto.MovieDetailDto
-import org.example.movieapplibrary.data.dto.MovieDto
-import org.example.movieapplibrary.domain.model.Movie
-import org.example.movieapplibrary.domain.model.MovieDetail
+import org.example.movieapplibrary.data.dto.moviedetail.MovieDetailDto
+import org.example.movieapplibrary.data.dto.movielist.MovieDto
+import org.example.movieapplibrary.data.dto.moviesearch.MovieSearchItemDto
+import org.example.movieapplibrary.domain.model.movielist.Movie
+import org.example.movieapplibrary.domain.model.moviedetails.MovieDetail
+import org.example.movieapplibrary.domain.model.moviesearch.MovieSearchResult
 
 fun MovieDto.toDomain(): Movie {
 
@@ -33,5 +35,24 @@ fun MovieDetailDto.toUi(): MovieDetail {
         year = releaseDate.take(4),
         duration = runtime.let { "${it / 60}h ${it % 60}m" },
         genres = genres.map { it.name }
+    )
+}
+
+fun MovieSearchItemDto.toSearchResult(): MovieSearchResult =
+    MovieSearchResult(
+        id = id,
+        title = title,
+        poster_path = poster_path.toString(),
+        vote_average = vote_average,
+        release_date = release_date?.take(4) ?: "—",
+    )
+
+fun MovieSearchResult.toMovie(): Movie {
+    return Movie(
+        id = id,
+        title = title,
+        posterPath = poster_path,
+        rating = vote_average,
+        year = release_date.take(4)
     )
 }

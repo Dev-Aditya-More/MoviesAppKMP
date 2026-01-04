@@ -28,9 +28,7 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
-
-            implementation(libs.ktor.client.core)
-            implementation("io.ktor:ktor-client-android:2.3.7")
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             // Coroutines (StateFlow, CoroutineScope, Dispatchers)
@@ -43,6 +41,15 @@ kotlin {
             // JSON serialization
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.core)
+        }
+        iosMain.dependencies {
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

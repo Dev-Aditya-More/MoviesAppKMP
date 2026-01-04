@@ -5,8 +5,9 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
-import org.example.movieapplibrary.data.dto.MovieDetailDto
-import org.example.movieapplibrary.data.dto.MoviesResponseDto
+import org.example.movieapplibrary.data.dto.moviedetail.MovieDetailDto
+import org.example.movieapplibrary.data.dto.movielist.MoviesResponseDto
+import org.example.movieapplibrary.data.dto.moviesearch.MovieSearchResponseDto
 
 class TmdbApi(
     private val client: HttpClient
@@ -36,4 +37,13 @@ class TmdbApi(
             )
         }.body()
     }
+
+    suspend fun searchMovies(query: String): MovieSearchResponseDto =
+        client.get("https://api.themoviedb.org/3/search/movie") {
+            parameter("query", query)
+            parameter("language", "en-US")
+            parameter("include_adult", false)
+            parameter("page", 1)
+        }.body()
+
 }

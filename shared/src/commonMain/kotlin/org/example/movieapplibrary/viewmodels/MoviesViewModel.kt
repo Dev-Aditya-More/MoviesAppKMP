@@ -1,5 +1,7 @@
 package org.example.movieapplibrary.viewmodels
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -10,23 +12,32 @@ import kotlinx.coroutines.launch
 import org.example.movieapplibrary.data.repository.FavouritesStore
 import org.example.movieapplibrary.data.repository.MoviesRepository
 import org.example.movieapplibrary.domain.utils.MoviesUiState
+import kotlin.collections.emptyList
 
 class MoviesViewModel(
     private val repository: MoviesRepository,
     private val favouritesStore: FavouritesStore
-) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+) : ViewModel() {
 
     private val _state = MutableStateFlow(MoviesUiState())
     val state: StateFlow<MoviesUiState> = _state
 
+    init {
+        viewModelScope.launch {
+            favouritesStore.favourites.collect { favs ->
+                _state.update { it.copy(favourites = favs) }
+            }
+        }
+
+        loadMovies()
+    }
+
     fun loadMovies() {
-        scope.launch {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
+
             try {
                 val movies = repository.getPopularMovies()
-
-                println("VM received movies = ${movies.size}")
-
                 _state.update {
                     it.copy(
                         movies = movies,
@@ -34,19 +45,17 @@ class MoviesViewModel(
                     )
                 }
             } catch (e: Exception) {
-                println("VM ERROR = ${e.message}")
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
             }
         }
     }
 
     fun toggleFavourite(movieId: Int) {
-
         favouritesStore.toggle(movieId)
-
-        _state.update {
-            it.copy(
-                favourites = favouritesStore.getAll()
-            )
-        }
     }
 }

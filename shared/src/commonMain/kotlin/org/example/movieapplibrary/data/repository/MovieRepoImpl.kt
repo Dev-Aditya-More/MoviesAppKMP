@@ -1,10 +1,12 @@
 package org.example.movieapplibrary.data.repository
 
 import org.example.movieapplibrary.data.mapper.toDomain
+import org.example.movieapplibrary.data.mapper.toSearchResult
 import org.example.movieapplibrary.data.mapper.toUi
 import org.example.movieapplibrary.data.remote.TmdbApi
-import org.example.movieapplibrary.domain.model.Movie
-import org.example.movieapplibrary.domain.model.MovieDetail
+import org.example.movieapplibrary.domain.model.movielist.Movie
+import org.example.movieapplibrary.domain.model.moviedetails.MovieDetail
+import org.example.movieapplibrary.domain.model.moviesearch.MovieSearchResult
 
 class MovieRepoImpl(
     private val api: TmdbApi
@@ -26,4 +28,9 @@ class MovieRepoImpl(
     override suspend fun getMovieDetail(movieId: Int): MovieDetail {
         return api.getMovieDetails(movieId).toUi()
     }
+
+    override suspend fun searchMovies(query: String): List<MovieSearchResult> =
+        api.searchMovies(query)
+            .results
+            .map { it.toSearchResult() }
 }

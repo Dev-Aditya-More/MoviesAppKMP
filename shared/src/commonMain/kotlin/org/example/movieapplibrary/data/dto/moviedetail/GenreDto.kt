@@ -1,4 +1,4 @@
-package org.example.movieapplibrary.data.dto
+package org.example.movieapplibrary.data.dto.moviedetail
 
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package org.example.movieapplibrary.domain.model
+package org.example.movieapplibrary.domain.model.moviedetails
 
 data class Result(
     val adult: Boolean,

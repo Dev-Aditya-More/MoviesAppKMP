@@ -1,5 +1,7 @@
 package org.example.movieapplibrary.viewmodels
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,20 +10,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.movieapplibrary.data.repository.FavouritesStore
 import org.example.movieapplibrary.data.repository.MoviesRepository
-import org.example.movieapplibrary.domain.model.MovieDetail
 import org.example.movieapplibrary.domain.utils.MovieDetailUiState
 
 class MovieDetailViewModel(
     private val repository: MoviesRepository,
     private val favouritesStore: FavouritesStore
-) {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(MovieDetailUiState())
     val state: StateFlow<MovieDetailUiState> = _state
 
     fun load(movieId: Int) {
-        CoroutineScope(Dispatchers.Default).launch {
-            _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
 
             try {
                 val movie = repository.getMovieDetail(movieId)
@@ -44,11 +45,6 @@ class MovieDetailViewModel(
 
     fun toggleFavourite() {
         val movieId = _state.value.movie?.id ?: return
-
         favouritesStore.toggle(movieId)
-
-        _state.update {
-            it.copy(isFavourite = !it.isFavourite)
-        }
     }
 }
